@@ -1,6 +1,6 @@
 # 6-DOF Flight Dynamics Simulation
 
-A C++20 engine for modeling rigid-body flight dynamics. Developed as a modular framework for atmospheric flight simulation, focusing on the decoupled physics of aerodynamics, propulsion, and environment.
+A C++20 engine for modeling rigid-body flight dynamics. Developed as a modular framework for atmospheric flight simulation, focusing on the physics of aerodynamics, propulsion, and environment.
 
 ![Python Demo](scripts/demo.png)
 
