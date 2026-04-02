@@ -1,0 +1,14 @@
+# Compiled binaries
+bin/
+build/
+*.o
+*.exe
+*.out
+
+# IDE folders
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
