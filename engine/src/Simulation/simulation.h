@@ -43,7 +43,7 @@ private:
     Integrator integrator;
 
     // Logging
-    Logger logger{"data/simulation_log.csv", "time,x,y,z,vx,vy,vz,roll,pitch,yaw,wx,wy,wz,aoa,mass"};
+    Logger logger{"../data/simulation_log.csv", "time,x,y,z,vx,vy,vz,roll,pitch,yaw,wx,wy,wz,aoa,mass"};
 };
 
 #endif // SIMULATION_H

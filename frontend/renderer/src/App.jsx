@@ -1,72 +1,19 @@
-import { useEffect, useState } from "react";
+import { useSocket } from "./hooks/useSocket";
+import { StatusBar } from "./components/StatusBar";
+import { TelemetryPanel } from "./components/TelemetryPanel";
+import FlightScene from "./scenes/FlightScene";
 import "./App.css";
 
 export default function App() {
-  const [state, setState] = useState({
-    connected: false,
-    position: [0, 0, 0],
-    velocity: [0, 0, 0],
-    fuel: 1.0
-  });
-
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
-
-    ws.onopen = () => {
-      setState((s) => ({ ...s, connected: true }));
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setState(data);
-      } catch (e) {
-        console.error("Bad data:", e);
-      }
-    };
-
-    ws.onclose = () => {
-      setState((s) => ({ ...s, connected: false }));
-    };
-
-    return () => ws.close();
-  }, []);
+  const { state, connected } = useSocket();
 
   return (
     <div className="app">
-      <header className="topbar">
-        <div className={state.connected ? "dot green" : "dot red"} />
-        <span>
-          {state.connected ? "CONNECTED" : "DISCONNECTED"}
-        </span>
-      </header>
+      <StatusBar connected={connected} />
 
       <div className="layout">
-        <div className="viewport">
-          <div className="placeholder">
-            <h2>3D Viewport</h2>
-            <p>Three.js scene will go here</p>
-          </div>
-        </div>
-
-        <div className="panel">
-          <h3>Telemetry</h3>
-
-          <div className="box">
-            <p><b>Position</b></p>
-            <pre>{JSON.stringify(state.position, null, 2)}</pre>
-          </div>
-
-          <div className="box">
-            <p><b>Velocity</b></p>
-            <pre>{JSON.stringify(state.velocity, null, 2)}</pre>
-          </div>
-
-          <div className="box">
-            <p><b>Fuel</b></p>
-            <p>{state.fuel}</p>
-          </div>
-        </div>
+        <FlightScene state={state} />
+        <TelemetryPanel state={state} />
       </div>
     </div>
   );

@@ -1,10 +1,25 @@
+/* Global Reset: Prevents random browser scrollbars */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0f14;
+  color: white;
+  font-family: sans-serif;
+}
+
+/* Overflow - Ensures nothing leaks out of the app container */
 .app {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden; 
 }
 
 /* Top bar */
+/* Flex Shrink - Prevents the topbar from being crushed vertically */
 .topbar {
   height: 40px;
   display: flex;
@@ -14,6 +29,7 @@
   background: #111826;
   border-bottom: 1px solid #1f2a3a;
   font-size: 14px;
+  flex-shrink: 0; 
 }
 
 .dot {
@@ -31,18 +47,25 @@
 }
 
 /* Main layout */
+/* Overflow - Prevents child elements from breaking the flex layout */
 .layout {
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
 
-/* 3D viewport placeholder */
+/* 3D viewport */
 .viewport {
   flex: 1;
   background: radial-gradient(circle at center, #121a26, #070a0f);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  
+  /* THREE.JS FIXES */
+  /* Min Width - Allows the flex child to shrink below its content size */
+  /* Min Height - Allows the flex child to shrink below its content size */
+  display: block; 
+  position: relative;
+  min-width: 0;
+  min-height: 0;
 }
 
 .placeholder {
@@ -51,12 +74,14 @@
 }
 
 /* Side panel */
+/* Flex Shrink - Prevents the panel from shrinking when the window gets narrow */
 .panel {
   width: 300px;
   background: #0f1623;
   border-left: 1px solid #1f2a3a;
   padding: 12px;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 .box {
@@ -67,7 +92,9 @@
   border: 1px solid #1f2a3a;
 }
 
+/* White Space - Ensures long telemetry strings don't break the layout */
 pre {
   font-size: 12px;
   color: #9fb3c8;
+  white-space: pre-wrap;
 }
