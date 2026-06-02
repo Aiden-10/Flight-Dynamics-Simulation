@@ -16,6 +16,7 @@ public:
     RigidBodyState& getRigidBodyState();
     void setState(const RigidBodyState& newState);
 
+    // should be private but needed for logging
     Aerodynamics aerodynamics;
 private:
     // RigidBodyState
@@ -24,9 +25,7 @@ private:
     // Physical Constants
     Vector3 centerOfGravity;
 
-    // Components
     Environment environment;
-    
     Propulsion propulsion;
     Gravity gravity;
     // Guidance guidance;
