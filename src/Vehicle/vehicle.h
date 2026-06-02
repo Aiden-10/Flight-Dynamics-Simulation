@@ -15,7 +15,6 @@ public:
 
     RigidBodyState& getRigidBodyState();
     void setState(const RigidBodyState& newState);
-
     // should be private but needed for logging
     Aerodynamics aerodynamics;
 private:
