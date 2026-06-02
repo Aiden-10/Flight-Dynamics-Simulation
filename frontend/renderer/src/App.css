@@ -1,0 +1,73 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Top bar */
+.topbar {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  background: #111826;
+  border-bottom: 1px solid #1f2a3a;
+  font-size: 14px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.green {
+  background: #00ff88;
+}
+
+.red {
+  background: #ff4d4d;
+}
+
+/* Main layout */
+.layout {
+  display: flex;
+  flex: 1;
+}
+
+/* 3D viewport placeholder */
+.viewport {
+  flex: 1;
+  background: radial-gradient(circle at center, #121a26, #070a0f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder {
+  text-align: center;
+  opacity: 0.6;
+}
+
+/* Side panel */
+.panel {
+  width: 300px;
+  background: #0f1623;
+  border-left: 1px solid #1f2a3a;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.box {
+  background: #121c2b;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: 1px solid #1f2a3a;
+}
+
+pre {
+  font-size: 12px;
+  color: #9fb3c8;
+}

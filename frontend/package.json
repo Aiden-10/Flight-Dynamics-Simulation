@@ -1,0 +1,15 @@
+{
+  "name": "flight-sim-frontend",
+  "version": "1.0.0",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev:renderer": "cd renderer && npm run dev",
+    "dev:electron": "wait-on http://localhost:5173 && electron .",
+    "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:electron\""
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "concurrently": "^8.2.0",
+    "wait-on": "^7.0.1"
+  }
+}

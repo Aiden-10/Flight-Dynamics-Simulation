@@ -1,14 +1,45 @@
-# Compiled binaries
+# =========================
+# Engine / C++
+# =========================
 bin/
 build/
 *.o
+*.obj
 *.exe
 *.out
+*.a
+*.lib
 
-# IDE folders
+# =========================
+# Node / Electron / React
+# =========================
+node_modules/
+dist/
+dist-electron/
+.vite/
+out/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Electron packaging
+*.asar
+
+# =========================
+# IDE
+# =========================
 .vscode/
 .idea/
 
+# =========================
 # OS junk
+# =========================
 .DS_Store
 Thumbs.db
+
+# =========================
+# Environment
+# =========================
+.env
+.env.*
