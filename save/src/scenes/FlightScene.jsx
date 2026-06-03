@@ -3,32 +3,24 @@ import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 
 export default function FlightScene({ state }) {
   const mountRef = useRef(null);
-
-  const sceneRef = useRef();
-  const cameraRef = useRef();
-  const rendererRef = useRef();
-  const planeRef = useRef();
-
   const stateRef = useRef(state);
 
-  // keep latest state
+  // Keep animation loop updated with latest WebSocket state
   useEffect(() => {
     stateRef.current = state;
   }, [state]);
 
+  // Engine Lifecycle
   useEffect(() => {
-    // IMPORTANT FIX: Capture the ref value immediately
     const currentMount = mountRef.current;
     if (!currentMount) return;
 
     // --------------------
-    // Scene
+    // Initialization
     // --------------------
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0b0f14);
-    sceneRef.current = scene;
 
-    // Camera
     const camera = new THREE.PerspectiveCamera(
       75,
       currentMount.clientWidth / currentMount.clientHeight,
@@ -36,67 +28,65 @@ export default function FlightScene({ state }) {
       1000
     );
     camera.position.set(0, 5, 10);
-    cameraRef.current = camera;
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(
-      currentMount.clientWidth,
-      currentMount.clientHeight
-    );
-
+    renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
     currentMount.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
 
-    // Lights
+    // --------------------
+    // Lighting & Objects
+    // --------------------
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(5, 10, 5);
     scene.add(light);
 
-    // Plane
     const plane = new THREE.Mesh(
       new THREE.BoxGeometry(1, 0.3, 2),
       new THREE.MeshStandardMaterial({ color: 0x00ffcc })
     );
-
     scene.add(plane);
-    planeRef.current = plane;
-
-    // Grid
     scene.add(new THREE.GridHelper(200, 50));
 
     // --------------------
-    // Animation loop
+    // Resize Observer
+    // --------------------
+    const handleResize = () => {
+      if (!currentMount) return;
+      const width = currentMount.clientWidth;
+      const height = currentMount.clientHeight;
+
+      renderer.setSize(width, height);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(currentMount);
+
+    // --------------------
+    // Animation Loop
     // --------------------
     let animationId;
-
     const animate = () => {
       animationId = requestAnimationFrame(animate);
 
       const currentState = stateRef.current;
 
-      // SAFE state usage
-      if (currentState && planeRef.current) {
+      // Apply the latest telemetry to the plane
+      if (currentState) {
         const p = currentState.position;
         const q = currentState.quaternion;
 
-        if (p) planeRef.current.position.set(p[0], p[1], p[2]);
-        if (q) planeRef.current.quaternion.set(q[0], q[1], q[2], q[3]);
+        if (p) plane.position.set(p[0], p[1], p[2]);
+        if (q) plane.quaternion.set(q[0], q[1], q[2], q[3]);
       }
 
-      // camera follow
-      if (planeRef.current && cameraRef.current) {
-        const p = planeRef.current.position;
-
-        cameraRef.current.position.lerp(
-          new THREE.Vector3(p.x, p.y + 5, p.z + 12),
-          0.08
-        );
-
-        cameraRef.current.lookAt(p);
-      }
+      // Smooth camera follow logic
+      const p = plane.position;
+      camera.position.lerp(new THREE.Vector3(p.x, p.y + 5, p.z + 12), 0.08);
+      camera.lookAt(p);
 
       renderer.render(scene, camera);
     };
@@ -104,23 +94,19 @@ export default function FlightScene({ state }) {
     animate();
 
     // --------------------
-    // CLEANUP 
+    // Cleanup Phase
     // --------------------
     return () => {
       cancelAnimationFrame(animationId);
+      resizeObserver.disconnect();
+      renderer.dispose();
+      renderer.forceContextLoss();
 
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-        rendererRef.current.forceContextLoss();
-      }
-
-      // IMPORTANT FIX: Use the captured `currentMount` variable
-      if (currentMount && rendererRef.current?.domElement) {
-        currentMount.removeChild(rendererRef.current.domElement);
+      if (currentMount && renderer.domElement) {
+        currentMount.removeChild(renderer.domElement);
       }
     };
-  }, []);
+  }, []); // Empty dependency array ensures this setup only runs once
 
- 
   return <div ref={mountRef} className="viewport" />;
 }

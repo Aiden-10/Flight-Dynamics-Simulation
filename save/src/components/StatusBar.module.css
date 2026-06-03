@@ -1,0 +1,78 @@
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 40px;
+  background: #111826;
+  border-bottom: 1px solid #1f2a3a;
+  flex-shrink: 0;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 150px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.green { background: #00ff88; }
+.red { background: #ff4d4d; }
+
+.statusText {
+  font-family: monospace;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+.simControls {
+  display: flex;
+  gap: 15px;
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  color: #9fb3c8;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.iconBtn:hover {
+  color: #00ffcc;
+  transform: scale(1.1);
+}
+
+.timeScale {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 150px;
+  justify-content: flex-end;
+  font-size: 12px;
+  font-family: monospace;
+  color: #9fb3c8;
+}
+
+.darkSelect {
+  background: #0b0f14;
+  border: 1px solid #1f2a3a;
+  color: white;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-family: sans-serif;
+  font-size: 16px;
+}
+
+.darkSelect:focus {
+  outline: none;
+  border-color: #00ffcc;
+}

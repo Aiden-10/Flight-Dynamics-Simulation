@@ -50,7 +50,7 @@ void PhysicsEngine::runWorkerLoop() {
             sim.stop();
         }
 
-        // std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
     std::cout << "Physics Thread Finished" << std::endl;
