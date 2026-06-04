@@ -1,25 +1,26 @@
 #include <iostream>
 #include <iomanip>
 #include <thread>
-#include "engine.h"
-#include "Networking/TelemetryStreamer.h"
+#include "application.h"
 #include "Networking/DataStructures.h"
-// ---------------------------------------------------------
-// TODO LIST:
-// - Get real motor data (ThrustCurve.org)
-// - Calculate dynamic inertia (mass-based)
-// - Implement look-up tables (Mach vs Drag)
-// ---------------------------------------------------------
+#include "Networking/WebSocketServer.h"
 
 int main() {
 
     std::cout << "Starting Flight Dynamics Simulation..." << std::endl;
 
-    PhysicsEngine physics;
+    WebSocketServer server;
+    if (!server.initialize(8080)) {
+        std::cerr << "Failed to initialize WebSocket server on port 8080." << std::endl;
+        return -1;
+    }
+    server.start();
     
-    physics.initializeScenario();
+    Application app;
+    
+    app.initializeScenario();
 
-    physics.runWorkerLoop();
+    app.runWorkerLoop();
 
     std::cout << "Simulation completed." << std::endl;
 

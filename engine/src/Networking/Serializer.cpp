@@ -1,6 +1,6 @@
 #include "Serializer.h"
 
-std::string Serializer::toJson(const FlightState& state) {
+std::string Serializer::toJson(const SimulationState& state) {
     std::string j = "{";
     // Position
     j += "\"px\":" + std::to_string(state.px) + ",";

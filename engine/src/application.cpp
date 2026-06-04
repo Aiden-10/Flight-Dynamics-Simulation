@@ -1,13 +1,13 @@
-#include "engine.h"
+#include "application.h"
 
 #include <thread>
 
-PhysicsEngine::PhysicsEngine() : sim(0.01, 300) {
+Application::Application() : sim(0.01, 300) {
     // The Simulation is initialized with a timestep of 0.01s and a max duration of 300s (5 minutes)
 }
 
 
-void PhysicsEngine::initializeScenario() {
+void Application::initializeScenario() {
     
     Matrix3x3 inertia(
         1.2,  0.0,  0.0,  // X (Roll) 
@@ -32,7 +32,7 @@ void PhysicsEngine::initializeScenario() {
 
 }
 
-void PhysicsEngine::runWorkerLoop() {
+void Application::runWorkerLoop() {
     sim.start();
 
     while (sim.isRunning()) {

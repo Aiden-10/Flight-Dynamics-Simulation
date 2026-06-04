@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import net from 'net'
 
 function createWindow() {
   // Create the browser window.
@@ -15,6 +16,30 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
+  })
+
+  const tcpClient = new net.Socket()
+  // Try to connect to the C++ Engine
+  const connectToEngine = () => {
+    tcpClient.connect(8080, '127.0.0.1', () => {
+      console.log('Connected to C++ Flight Engine!')
+    })
+  }
+
+  // Initial connection attempt
+  connectToEngine()
+  // Listen for raw byte data from C++
+  tcpClient.on('data', (data) => {
+    const message = data.toString()
+    // Forward the raw string to the React window
+    if (!mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('telemetry-update', message)
+    }
+  })
+  // Handle disconnects gracefully so Electron doesn't crash
+  tcpClient.on('error', (err) => {
+    console.log('Engine disconnected or not found. Retrying in 3 seconds...')
+    setTimeout(connectToEngine, 3000)
   })
 
   mainWindow.on('ready-to-show', () => {
@@ -34,6 +59,8 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -72,3 +99,5 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+
