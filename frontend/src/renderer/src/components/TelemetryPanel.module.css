@@ -1,141 +1,251 @@
-/* Container */
 .panel {
-  width: 300px;
-  background: #0f1623;
-  border-left: 1px solid #1f2a3a;
-  padding: 10px;
+  width: 340px;
+  background:
+    linear-gradient(180deg, #0a0a0a 0%, #0a0a0a 100%);
+  border-left: 1px solid #2b2b2b;
+  padding: 12px;
   overflow-y: auto;
   flex-shrink: 0;
   box-sizing: border-box;
+  font-family: "Consolas", "Courier New", monospace;
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.55);
 }
 
-/* Accordion Sections */
-.section {
-  background: #121c2b;
-  border: 1px solid #1f2a3a;
-  border-radius: 6px;
-  margin-bottom: 10px;
-  overflow: hidden; /* Keeps the rounded corners clean */
-}
-
-.sectionHeader {
-  width: 100%;
+.panelTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #172235;
-  border: none;
-  border-bottom: 1px solid transparent;
-  padding: 10px 12px;
-  cursor: pointer;
-  color: #9fb3c8;
-  transition: all 0.2s;
+  color: #d6d6d6;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  padding: 8px 4px 12px;
+  border-bottom: 1px solid #2b2b2b;
+  margin-bottom: 12px;
 }
 
-.sectionHeader:hover {
-  background: #1e2c45;
-  color: white;
-}
-
-.sectionHeader.open {
-  border-bottom: 1px solid #1f2a3a;
-  color: #00ffcc;
-}
-
-.sectionTitle {
+.panelStatus {
+  color: #6cff8f;
   font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(108, 255, 143, 0.55);
+}
+
+.instrument {
+  background:
+    linear-gradient(180deg, #1c1c1c 0%, #111111 100%);
+  border: 1px solid #2b2b2b;
+  border-radius: 3px;
+  margin-bottom: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 6px 14px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.instrumentHeader {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  background: #111111;
+  color: #8f8f8f;
+  border: none;
+  border-bottom: 1px solid #2b2b2b;
+  padding: 9px 10px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.instrumentHeader:hover {
+  background: #1c1c1c;
+}
+
+.instrumentHeader.open {
+  color: #d6d6d6;
+}
+
+.instrumentCode {
+  color: #6cff8f;
+  font-size: 11px;
+  font-weight: 800;
   letter-spacing: 1px;
+}
+
+.instrumentTitle {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .caret {
   font-size: 10px;
+  color: #6cff8f;
 }
 
-.sectionContent {
-  padding: 15px 12px;
+.instrumentBody {
+  padding: 12px;
 }
 
-/* Form Elements (Same as before) */
-.formLayout {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+.readoutGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+.readout {
+  background: #0a0a0a;
+  border: 1px solid #2b2b2b;
+  padding: 9px;
+  border-radius: 2px;
 }
 
-.inputGroup label {
-  font-size: 11px;
-  color: #9fb3c8;
+.readoutLabel {
+  display: block;
+  color: #8f8f8f;
+  font-size: 10px;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.readoutValue {
+  color: #d6d6d6;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.unit {
+  color: #8f8f8f;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.controlBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.controlBlock label {
+  color: #8f8f8f;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.darkSelect,
+.darkInput {
+  background: #0a0a0a;
+  border: 1px solid #2b2b2b;
+  color: #d6d6d6;
+  padding: 7px 8px;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.darkSelect:focus,
+.darkInput:focus {
+  outline: none;
+  border-color: #6cff8f;
+}
+
+.armButton {
+  width: 100%;
+  background:
+    linear-gradient(180deg, #241515 0%, #120909 100%);
+  border: 1px solid #b84a4a;
+  color: #d6d6d6;
+  padding: 9px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.armButton:hover {
+  border-color: #b84a4a;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(184, 74, 74, 0.3);
 }
 
 .toggleGroup {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: #9fb3c8;
-}
-
-.darkSelect, .darkInput {
-  background: #0b0f14;
-  border: 1px solid #1f2a3a;
-  color: white;
-  padding: 6px;
-  border-radius: 4px;
-  font-family: sans-serif;
+  gap: 9px;
+  color: #8f8f8f;
+  accent-color: #6cff8f;
   font-size: 12px;
+  margin-bottom: 8px;
 }
 
-.darkSelect:focus, .darkInput:focus {
-  outline: none;
-  border-color: #00ffcc;
-}
-
-.actionBtn {
-  background: #1f2a3a;
-  color: white;
-  border: 1px solid #33445c;
-  padding: 8px;
+.toggleGroup input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #555;
   border-radius: 4px;
+  background: #2b2b2b;
   cursor: pointer;
-  font-weight: bold;
-  text-transform: uppercase;
-  font-size: 11px;
-  margin-top: 5px;
+  transition: 0.15s;
 }
 
-.actionBtn:hover {
-  background: #2a3a50;
-  border-color: #00ffcc;
+.toggleGroup input[type="checkbox"]:checked {
+  background: #6cff8f;
+  border-color: #6cff8f;
+}
+
+.toggleGroup input[type="checkbox"]:checked::after {
+  content: "✓";
+  color: 2b2b2b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  font-style: bold;
+  line-height: 12px;
 }
 
 .placeholder {
   text-align: center;
-  opacity: 0.6;
-  font-size: 13px;
+  color: #8f8f8f;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 14px 0;
 }
 
 .jsonOutput {
+  background: #0a0a0a;
+  border: 1px solid #2b2b2b;
+  color: #3fbf63;
   font-size: 11px;
-  color: #667b94;
   white-space: pre-wrap;
   margin: 0;
+  padding: 10px;
+  max-height: 220px;
+  overflow: auto;
 }
 
-/* Mobile Media Query */
+input[type="range"] {
+  accent-color: #6cff8f;
+}
+
+input[type="checkbox"] {
+  accent-color: #6cff8f;
+}
+
 @media (max-width: 768px) {
   .panel {
     width: 100%;
-    height: 35vh;
+    height: 38vh;
     border-left: none;
-    border-top: 1px solid #1f2a3a;
+    border-top: 1px solid #2b2b2b;
   }
 }

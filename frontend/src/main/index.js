@@ -9,7 +9,8 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
-    show: false,
+    frame: false,
+    titleBarStyle: "hidden",
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -17,6 +18,22 @@ function createWindow() {
       sandbox: false
     }
   })
+
+  ipcMain.on("window:minimize", () => {
+    mainWindow.minimize();
+  });
+
+  ipcMain.on("window:maximize", () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  });
+
+  ipcMain.on("window:close", () => {
+    mainWindow.close();
+  });
 
   const tcpClient = new net.Socket()
   // Try to connect to the C++ Engine

@@ -3,11 +3,11 @@
 #include <cstdint>
 
 // Command structure for sending commands to the simulation
-struct Command {
+struct CommandPacket {
     // Command types
     enum Type { SPAWN, SET_TARGET, PAUSE };
     Type type;
-    // Parameters for the command (e.g., position, velocity, etc.)
+    // Parameters for the command (position, velocity, etc.)
     float params[3]; 
 };
 
@@ -26,7 +26,7 @@ struct SimulationState {
 
 // Metrics structure for tracking network performance
 struct NetworkMetrics {
-    // std::atomic ensures thread-safe increments without mutexes
+    // std::atomic ensures thread-safety without mutexes
     std::atomic<uint64_t> messagesSent{0};
     std::atomic<uint64_t> bytesTransmitted{0};
     std::atomic<uint32_t> failedSends{0};

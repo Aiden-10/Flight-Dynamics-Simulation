@@ -60,6 +60,7 @@ void WebSocketServer::workerLoop() {
     while (isRunning) {
         // accept() blocks the thread until a client connects
         clientSocket = accept(s, (struct sockaddr *)&client, &c);
+
         
         if (clientSocket == INVALID_SOCKET) {
             if (!isRunning) break; // Expected behavior during shutdown
@@ -67,16 +68,53 @@ void WebSocketServer::workerLoop() {
             continue; 
         }
 
+        // Set the client socket to non-blocking mode so we can check for messages without blocking the thread
+        u_long iMode = 1;
+        if (ioctlsocket(clientSocket, FIONBIO, &iMode) != NO_ERROR) {
+            std::cout << "[ERROR] Failed to set non-blocking mode." << std::endl;
+            closesocket(clientSocket);
+            continue;
+        }
+
         // Sending data to the connected client
         while (isRunning) {
-            std::string message = "This is an example message from the WebSocketServer.\n";
-            int sendResult = send(clientSocket, message.c_str(), message.length(), 0);
-            
-            // Update metrics
+            // Increment loop iteration count for metrics
             metrics.loopIterations.fetch_add(1, std::memory_order_relaxed);
+
+            // Recieve Data
+            std::string buffer(1024, 0);
+            int recvResult = recv(clientSocket, buffer.data(), buffer.size(), 0);
+            if (recvResult > 0) {
+                // Command received, process it
+                buffer.resize(recvResult); 
+                std::cout << "[REACT] " << buffer << std::endl;
+            } 
+            else if (recvResult == 0) {
+                std::cout << "[DEBUG] React UI disconnected." << std::endl;
+                break;
+            } 
+            else {
+                int err = WSAGetLastError();
+                if (err != WSAEWOULDBLOCK) {
+                    std::cout << "[DEBUG] Read error / lost connection: " << err << std::endl;
+                    break;
+                }
+            }
+
+            // Send Data
+            std::string messageToSend = "Engine Step Data\n";
+            int sendResult = send(clientSocket, messageToSend.c_str(), messageToSend.length(), 0);
+
             if (sendResult == SOCKET_ERROR) {
-                metrics.failedSends.fetch_add(1, std::memory_order_relaxed);
-                break; 
+                int err = WSAGetLastError();
+                if (err == WSAEWOULDBLOCK) {
+                    // OS buffer is full, drop this frame but keep connection alive
+                    metrics.failedSends.fetch_add(1, std::memory_order_relaxed);
+                } else {
+                    // Fatal error, drop client
+                    std::cout << "[DEBUG] Send fatal error: " << err << std::endl;
+                    break; 
+                }
             } else {
                 metrics.messagesSent.fetch_add(1, std::memory_order_relaxed);
                 metrics.bytesTransmitted.fetch_add(sendResult, std::memory_order_relaxed);

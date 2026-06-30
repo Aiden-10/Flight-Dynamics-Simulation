@@ -7,7 +7,7 @@
 
 int main() {
 
-    std::cout << "Starting Flight Dynamics Simulation..." << std::endl;
+    std::cout << "Starting Engine..." << std::endl;
 
     WebSocketServer server;
     if (!server.initialize(8080)) {
