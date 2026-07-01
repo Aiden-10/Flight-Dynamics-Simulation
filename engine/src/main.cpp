@@ -8,17 +8,8 @@
 int main() {
 
     std::cout << "Starting Engine..." << std::endl;
-
-    WebSocketServer server;
-    if (!server.initialize(8080)) {
-        std::cerr << "Failed to initialize WebSocket server on port 8080." << std::endl;
-        return -1;
-    }
-    server.start();
     
     Application app;
-    
-    app.initializeScenario();
 
     app.runWorkerLoop();
 

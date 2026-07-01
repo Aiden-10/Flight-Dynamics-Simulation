@@ -1,28 +1,9 @@
 #include "simulation.h"
-
 #include <iostream>
 
 Simulation::Simulation(double dt, double maxDuration) : integrator(dt){
     this->dt = dt;
     this->maxDuration = maxDuration;
-}
-
-void Simulation::run() {
-    running = true;
-    // Main loop
-    while (currentTime < maxDuration && isRunning()) {
-        // Step through each vehicle
-        step();
-
-        for (auto& vehicle : vehicles) {
-            if (vehicle.getRigidBodyState().pos.z < 0) {
-                std::cout << "Impact detected at t=" << currentTime << std::endl;
-                running = false;
-            }
-        }
-
-        currentTime += dt;
-    }
 }
 
 void Simulation::log(double time) {
@@ -53,7 +34,7 @@ void Simulation::log(double time) {
     }
 }
 
-void Simulation::step() {
+SimulationState Simulation::step() {
     
     for (auto& vehicle : vehicles) {
 
@@ -66,9 +47,27 @@ void Simulation::step() {
         // Update the vehicle's state
         vehicle.setState(currentState);
 
+        // Log the current state
         log(currentTime);
 
+        // Prepare the SimulationState to send to the UI
+        SimulationState simState;
+        simState.currentTime = currentTime;
+        simState.px = currentState.pos.x;
+        simState.py = currentState.pos.y;
+        simState.pz = currentState.pos.z;
+        simState.qw = currentState.orientation.w;
+        simState.qx = currentState.orientation.x;
+        simState.qy = currentState.orientation.y;
+        simState.qz = currentState.orientation.z;
+        simState.vx = currentState.vel.x;
+        simState.vy = currentState.vel.y;
+        simState.vz = currentState.vel.z;
+        simState.fuel_mass = currentState.mass;
+
         currentTime += dt;
+
+        return simState;
     }   
 }
 void Simulation::stop() {

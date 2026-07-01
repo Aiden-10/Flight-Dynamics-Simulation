@@ -23,12 +23,11 @@ private:
     // like position, velocity, orientation, etc.
     TSQueue<SimulationState> outgoingQueue;
 
+    // Boolean flag to indicate if application is running
+    bool isRunning = true;
 public:
     // Constructor
     Application();
-
-    // Adds vehicles and sets up the initial scenario
-    void initializeScenario();
 
     // Main loop for running the simulation
     void runWorkerLoop(); 

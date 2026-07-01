@@ -1,5 +1,7 @@
 # =========================================================
 # Native Windows Compiler Settings
+# mingw32-make
+# mingw32-make run
 # =========================================================
 CXX      := g++
 CXXFLAGS := -std=c++20 -O3 -Wall -Wextra -Isrc 
@@ -27,25 +29,22 @@ all: $(TARGET)
 
 # Link the final executable
 $(TARGET): $(OBJECTS)
-	@if not exist "$(BIN_DIR)" mkdir "$(BIN_DIR)"
+	@mkdir -p "$(BIN_DIR)"
 	@echo Linking Windows Server $(TARGET)...
 	$(CXX) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 
-# Compile C++ Source Files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@if not exist "$(@D)" mkdir "$(@D)"
+	@mkdir -p "$(@D)"
 	@echo Compiling C++: $<...
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Clean up 
 clean:
 	@echo Cleaning build artifacts...
-	@if exist "$(BUILD_DIR)" rmdir /S /Q "$(BUILD_DIR)"
-	@if exist "$(BIN_DIR)" rmdir /S /Q "$(BIN_DIR)"
+	@rm -rf "$(BUILD_DIR)" "$(BIN_DIR)"
 
 .PHONY: all clean run
 
 # Run the simulation after building
 run: all
 	@echo Launching Simulation...
-	$(TARGET)
+	./$(TARGET)

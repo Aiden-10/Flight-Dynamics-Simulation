@@ -1,11 +1,16 @@
+#pragma once
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdio.h>
 #include <iostream>
+#include <iomanip>
 #include <thread>
 #include <atomic>
 
 #include "DataStructures.h"
+#include "../Helpers/ThreadSafeQueue.h"
+#include "Serializer.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -18,7 +23,7 @@ public:
     bool initialize(int port);
 
     // Start the server
-    void start();
+    void start(TSQueue<CommandPacket>& incomingQueue, TSQueue<SimulationState>& outgoingQueue);
 
     // Stop the server and clean
     void stop();
@@ -29,6 +34,9 @@ private:
 
     // Debug loop for printing metrics
     void debugLoop();
+
+    // Process incoming command packets from the UI
+    void processIncomingCommand();
     
 private:
     // Winsock data structure
@@ -49,4 +57,9 @@ private:
     std::thread debugThread;
     // Metrics for tracking network performance
     NetworkMetrics metrics;
+    // incomingQueue
+    TSQueue<CommandPacket>* incomingQueue = nullptr;
+    // outgoingQueue
+    TSQueue<SimulationState>* outgoingQueue = nullptr;
+
 };

@@ -4,9 +4,45 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import net from 'net'
 
+// Global reference to the main window and TCP client
+let mainWindow
+let tcpClient = null
+let isConnected = false
+
+// Function to connect to the C++ engine via TCP
+function connectToEngine() {
+  tcpClient = new net.Socket()
+
+  tcpClient.connect(8080, '127.0.0.1', () => {
+    console.log('Connected to C++ engine')
+    isConnected = true
+  })
+
+ tcpClient.on('data', (data) => {
+    const message = data.toString()
+    // console.log('Received from C++:', message)
+
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('telemetry-update', message)
+    }
+  })
+
+  tcpClient.on('error', () => {
+    console.log('Engine disconnected or not found. Retrying in 3 seconds...')
+    isConnected = false
+    tcpClient.destroy()
+    setTimeout(connectToEngine, 3000)
+  })
+
+  tcpClient.on('close', () => {
+    isConnected = false
+  })
+}
+
+
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     frame: false,
@@ -15,14 +51,19 @@ function createWindow() {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
       sandbox: false
     }
   })
 
+  // Connect to the C++ engine
+  connectToEngine()
+
+  // IPC handlers for window controls
   ipcMain.on("window:minimize", () => {
     mainWindow.minimize();
   });
-
   ipcMain.on("window:maximize", () => {
     if (mainWindow.isMaximized()) {
       mainWindow.unmaximize();
@@ -30,54 +71,24 @@ function createWindow() {
       mainWindow.maximize();
     }
   });
-
   ipcMain.on("window:close", () => {
     mainWindow.close();
   });
 
-  const tcpClient = new net.Socket()
-  // Try to connect to the C++ Engine
-  const connectToEngine = () => {
-    tcpClient.connect(8080, '127.0.0.1', () => {
-      console.log('Connected to C++ Flight Engine!')
-    })
-  }
-
-  // Initial connection attempt
-  connectToEngine()
-  // Listen for raw byte data from C++
-  tcpClient.on('data', (data) => {
-    const message = data.toString()
-    // Forward the raw string to the React window
-    if (!mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('telemetry-update', message)
-    }
-  })
-  // Handle disconnects gracefully so Electron doesn't crash
-  tcpClient.on('error', (err) => {
-    console.log('Engine disconnected or not found. Retrying in 3 seconds...')
-    setTimeout(connectToEngine, 3000)
-  })
-
+  // Show the window
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
-
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
-
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -96,6 +107,20 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  ipcMain.on('send-command-to-engine', (_event, command) => {
+    console.log('Command received in main:', command)
+
+    if (!tcpClient || !isConnected || tcpClient.destroyed) {
+      console.log('TCP client not connected')
+      return
+    }
+
+    const message = JSON.stringify(command) + '\n'
+    tcpClient.write(message)
+
+    console.log('Sent to C++:', message)
+  })
+
   createWindow()
 
   app.on('activate', function () {
@@ -113,8 +138,4 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
 

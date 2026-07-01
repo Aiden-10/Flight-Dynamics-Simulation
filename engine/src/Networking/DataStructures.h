@@ -1,18 +1,20 @@
 #pragma once
 #include <atomic>
 #include <cstdint>
+#include <vector>
 
 // Command structure for sending commands to the simulation
 struct CommandPacket {
     // Command types
-    enum Type { SPAWN, SET_TARGET, PAUSE };
+    enum Type { RUN, HOLD, RESET, SETTINGS, EXIT };
     Type type;
-    // Parameters for the command (position, velocity, etc.)
-    float params[3]; 
+    // JSON string containing command parameters
+    std::string parameters;
 };
 
 // Simulation state structure for sending updates to the UI
 struct SimulationState {
+    double currentTime;
     // Position
     double px, py, pz;
     // Orientation (Quaternion)
@@ -20,7 +22,7 @@ struct SimulationState {
     // Velocity
     double vx, vy, vz;
     // Other stats
-    double fuel_mass;
+    double mass;
     double altitude;
 };
 

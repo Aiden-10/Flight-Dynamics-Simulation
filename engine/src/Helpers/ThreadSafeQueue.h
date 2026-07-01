@@ -1,4 +1,5 @@
 // C++ implementation of the above approach
+#pragma once
 #include <condition_variable>
 #include <iostream>
 #include <mutex>
@@ -50,5 +51,12 @@ public:
 
         // return item
         return item;
+    }
+
+    // Checks if the queue is empty
+    bool empty()
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        return m_queue.empty();
     }
 };

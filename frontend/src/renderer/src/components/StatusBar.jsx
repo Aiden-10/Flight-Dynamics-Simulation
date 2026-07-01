@@ -17,9 +17,15 @@ export function StatusBar({ connected, onOpenSettings}) {
         </div>
 
         <div className={styles.centerCluster}>
-          <button className={styles.controlBtn}>RESET</button>
-          <button className={styles.controlBtn}>RUN</button>
-          <button className={styles.controlBtn}>HOLD</button>
+          <button className={styles.controlBtn} onClick={() => window.engineAPI.sendCommand({ type: 'reset' })}>
+            RESET
+          </button>
+          <button className={styles.controlBtn} onClick={() => window.engineAPI.sendCommand({ type: 'run' })}>
+            RUN
+          </button>
+          <button className={styles.controlBtn} onClick={() => window.engineAPI.sendCommand({ type: 'hold' })}>
+            HOLD
+          </button>
         </div>
 
         <div className={styles.rightCluster}>

@@ -4,5 +4,5 @@
 
 class Serializer {
 public:
-    static std::string toJson(const SimulationState& state);
+    static std::string toJson(SimulationState state);
 };

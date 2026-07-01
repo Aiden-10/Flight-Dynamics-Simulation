@@ -4,6 +4,7 @@
 #include "../Environment/environment.h"
 #include "../Vehicle/vehicle.h"
 #include "../Logging/log.h"
+#include "../Networking/DataStructures.h"
 #include "integrator.h"
 #include <vector>
 #include <memory>
@@ -14,8 +15,7 @@ public:
     Simulation(double dt, double maxDuration);
 
     // Main Execution
-    void run();
-    void step();
+    SimulationState step();
     bool isRunning() const { return running; }
     void stop();
     void start();
